@@ -121,12 +121,10 @@ def export_docx():
     return send_file(buf, as_attachment=True, download_name="letter.docx",
         mimetype="application/vnd.openxmlformats-officedocument.wordprocessingml.document")
 
-# ===== HEALTH CHECK =====
 @app.get("/health")
 def health():
-    return jsonify(status="ok", message="Vakil Voice is running!")
+    return jsonify(status="ok")
 
-# ===== MAIN =====
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
     app.run(host="0.0.0.0", port=port, debug=False)
