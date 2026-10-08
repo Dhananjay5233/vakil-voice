@@ -1,3 +1,6 @@
+"""
+Vakil Voice - Hindi Legal Letter Writing Tool
+"""
 import io, os, sqlite3, tempfile, datetime
 from flask import Flask, request, jsonify, send_file
 from docx import Document
@@ -8,6 +11,7 @@ BASE = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE, "letters.db")
 app = Flask(__name__, static_folder="static", static_url_path="")
 
+# ===== DATABASE =====
 def db():
     con = sqlite3.connect(DB_PATH)
     con.row_factory = sqlite3.Row
@@ -22,6 +26,7 @@ def init_db():
 
 init_db()
 
+# ===== ROUTES =====
 @app.get("/")
 def home():
     return app.send_static_file("index.html")
@@ -68,6 +73,7 @@ def delete_letter(lid):
         con.execute("DELETE FROM letters WHERE id=?", (lid,))
     return jsonify(ok=True)
 
+# ===== WORD EXPORT =====
 def set_hindi_font(run_or_style, name="Mangal"):
     run_or_style.font.name = name
     el = run_or_style.element.rPr if hasattr(run_or_style.element, "rPr") else None
@@ -115,6 +121,12 @@ def export_docx():
     return send_file(buf, as_attachment=True, download_name="letter.docx",
         mimetype="application/vnd.openxmlformats-officedocument.wordprocessingml.document")
 
+# ===== HEALTH CHECK =====
+@app.get("/health")
+def health():
+    return jsonify(status="ok", message="Vakil Voice is running!")
+
+# ===== MAIN =====
 if __name__ == "__main__":
-    print("\n🚀 Server start ho raha hai... localhost:5000\n")
-    app.run(host="127.0.0.1", port=5000, debug=False)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host="0.0.0.0", port=port, debug=False)
