@@ -1,0 +1,110 @@
+====== VAKIL VOICE - 5 NEW FEATURES ADDED ======
+
+1. ✅ COURT-SPECIFIC TEMPLATES
+   - अब 6 अलग courts के templates हैं:
+     * District Court (जिला न्यायालय)
+     * High Court (उच्च न्यायालय)
+     * Supreme Court (सर्वोच्च न्यायालय)
+     * Consumer Court (उपभोक्ता न्यायालय)
+     * Labour Court (श्रम न्यायालय)
+     * Family Court (पारिवारिक न्यायालय)
+   
+   - हर court के नियम अलग होते हैं, templates भी अलग!
+   
+2. ✅ BETTER VOICE COMMANDS
+   अब ये commands काम करते हैं:
+   - "पूर्ण विराम" → "।"
+   - "कॉमा" → ","
+   - "नई लाइन" → नई पंक्ति
+   - "नया पैराग्राफ" → खाली पंक्ति
+   - "प्रश्न चिन्ह" → "?"
+   - "पैराग्राफ संख्या" → "1. 2. 3. 4..." (auto-increment)
+   
+3. ✅ LAWYER PROFILE (Auto-Fill)
+   - 👤 "प्रोफाइल" button sidebar में
+   - Profile save करो:
+     * नाम
+     * बार रजिस्ट्रेशन नं.
+     * पूरा पता
+     * फोन
+     * ईमेल
+     * विशेषज्ञता
+   - फिर नया letter लिखो तो automatically "अधिवक्ता का नाम व पता" भर जाता है!
+   - Data localStorage में save होता है (हमेशा रहता है)
+
+4. ✅ 15+ MORE TEMPLATES
+   अब 12 ready-to-use templates हैं:
+   - कानूनी नोटिस (डिस्ट्रिक्ट कोर्ट, हाई कोर्ट, सुप्रीम कोर्ट)
+   - चेक बाउंस नोटिस
+   - मानहानि नोटिस
+   - कार्यस्थल उत्पीड़न
+   - गलत बर्खास्तगी (लेबर कोर्ट)
+   - बेदखली नोटिस
+   - तलाक समझौता
+   - वसीयत अधिसूचना
+   - संपत्ति विभाजन
+   - कर्ज वसूली
+   - कार्यस्थल उत्पीड़न (यौन/भेदभाव)
+   - GST विवाद
+
+5. ✅ HINDI SPELL CHECK
+   - अब जब letter type करो, नीचे suggestion दिखता है
+   - "कीसे" → "किसे"
+   - "थोडा" → "थोड़ा"
+   - "वहां" → "वहाँ"
+   - "सब डबल punctuation" को fix करता है
+   
+   Blue box में दिखेगा: "✓ हिंदी जाँच"
+
+====== HOW TO USE ======
+
+1. Terminal में chalao jaisa pehle:
+   python app.py
+
+2. Chrome में: http://localhost:5000
+
+3. Ab ye steps follow karo:
+   
+   STEP 1: 👤 Profile भरो (एक बार)
+   - नाम, बार नं., पता add करो
+   - सहेजो
+   - अब हर नए letter में auto-fill हो जाएगा!
+   
+   STEP 2: न्यायालय चुनो
+   - District Court / High Court / SC / Consumer / Labour / Family
+   
+   STEP 3: पत्र का प्रकार चुनो
+   - 12 templates में से कोई भी
+   
+   STEP 4: "टेम्पलेट भरें" दबाओ
+   - Template body auto-fill हो जाएगा (court-specific!)
+   
+   STEP 5: बोलो या type करो
+   - "पैराग्राफ संख्या" बोलो → auto "1. 2. 3."
+   - Hindi spell suggestions नीचे दिखेंगे
+   
+   STEP 6: सहेजो
+   - Letter database में save हो जाएगा
+   
+   STEP 7: Word export करो
+   - Professional .docx file बन जाएगी
+
+====== KEYBOARD ======
+
+आवाज़ काम न कर रहे तो:
+- Manually type करो
+- Voice commands वैसे भी काम करते हैं (बोलते वक़्त punctuation/paragraph के लिए)
+
+====== NEXT IMPROVEMENTS (जब तुम कहो) ======
+
+- Multi-user login (office के 5 lawyers)
+- Case management (letter → case linking)
+- Email integration
+- Version control
+- Document assembly (Q&A से auto-generate)
+
+====== DOWNLOAD & UPDATE ======
+
+vakil-voice.zip download करो, extract करो, python app.py chalao!
+
+That's it! Enjoy! 🚀
