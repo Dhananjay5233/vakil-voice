@@ -420,7 +420,7 @@ def init_db():
 
 init_db()
 
-# ===== HOME PAGE (EMBEDDED HTML WITH ALL TEMPLATES) =====
+# ===== HOME PAGE WITH IMPROVED MIC =====
 HTML_CONTENT = """<!DOCTYPE html>
 <html lang="hi">
 <head>
@@ -438,8 +438,6 @@ body{margin:0;display:flex;min-height:100vh;background:var(--bg);color:var(--ink
 .logo{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;font-size:1.4rem;background:linear-gradient(135deg,var(--gold),#d4a95a)}
 .brand h1{margin:0;font-family:"Noto Serif Devanagari",serif;font-size:1.2rem;color:#fff}
 .brand p{margin:0;font-size:.75rem;color:#9fb1c7}
-.profile-btn{width:100%;border:0;border-radius:10px;padding:10px;font:inherit;font-weight:600;cursor:pointer;background:#ffffff1a;color:#fff;margin-bottom:8px;border:1px solid #ffffff22;transition:.15s}
-.profile-btn:hover{background:#ffffff2a}
 .btn-new{width:100%;border:0;border-radius:10px;padding:10px;font:inherit;font-weight:600;cursor:pointer;background:linear-gradient(135deg,var(--gold),#d4a95a);color:var(--navy);margin-bottom:12px}
 .search{width:100%;margin:10px 0 14px;padding:9px;border-radius:10px;border:1px solid #ffffff22;background:#ffffff12;color:#fff;font:inherit;font-size:.9rem}
 #list{list-style:none;margin:0;padding:0;flex:1;overflow:auto}
@@ -454,7 +452,7 @@ main{flex:1;padding:22px 28px 40px;max-width:950px;margin:0 auto}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:14px}
 .field{margin-bottom:12px;position:relative}
 .field label{display:block;font-size:.8rem;font-weight:600;color:var(--mute);margin-bottom:5px}
-.field-wrapper{position:relative;display:flex;gap:8px}
+.field-wrapper{position:relative;display:flex;gap:8px;align-items:flex-start}
 .field-wrapper textarea, .field-wrapper input{flex:1}
 input,select,textarea{font:inherit;font-size:.95rem;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:9px;padding:9px 10px;width:100%;transition:border-color .15s}
 input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold)}
@@ -466,15 +464,18 @@ button{font:inherit;cursor:pointer}
 .btn:hover{border-color:var(--gold);background:#fffaf0}
 .btn-primary{background:var(--navy);border:0;color:#fff;padding:10px 16px}
 .btn-primary:hover{background:#173a5e}
-.mic-small{border-radius:50%;width:40px;height:40px;display:grid;place-items:center;font-weight:600;background:linear-gradient(135deg,var(--navy),#173a5e);color:#fff;border:0;font-size:1rem;transition:.2s;box-shadow:0 2px 8px rgba(15,39,66,.2);flex-shrink:0}
+.mic-small{border-radius:50%;width:40px;height:40px;display:grid;place-items:center;font-weight:600;background:linear-gradient(135deg,var(--navy),#173a5e);color:#fff;border:0;font-size:1rem;transition:.2s;box-shadow:0 2px 8px rgba(15,39,66,.2);flex-shrink:0;position:relative}
 .mic-small:hover{transform:translateY(-1px)}
-.mic-small.on{background:linear-gradient(135deg,#c0392b,#e0584a);animation:pulse 1.2s infinite}
-.mic-large{border-radius:50%;width:50px;height:50px;display:grid;place-items:center;font-weight:600;background:linear-gradient(135deg,var(--navy),#173a5e);color:#fff;border:0;font-size:1.3rem;transition:.2s;box-shadow:0 4px 12px rgba(15,39,66,.3)}
+.mic-small.on{background:linear-gradient(135deg,#c0392b,#e0584a);animation:pulse 1.2s infinite;box-shadow:0 4px 12px rgba(192,57,43,.4)}
+.mic-status{font-size:.7rem;font-weight:600;position:absolute;top:-20px;right:0;color:#c0392b;display:none}
+.mic-small.on .mic-status{display:block}
+.mic-large{border-radius:50%;width:60px;height:60px;display:grid;place-items:center;font-weight:600;background:linear-gradient(135deg,var(--navy),#173a5e);color:#fff;border:0;font-size:1.4rem;transition:.2s;box-shadow:0 4px 12px rgba(15,39,66,.3);position:relative}
 .mic-large:hover{transform:translateY(-2px)}
-.mic-large.on{background:linear-gradient(135deg,#c0392b,#e0584a);animation:pulse 1.2s infinite}
+.mic-large.on{background:linear-gradient(135deg,#c0392b,#e0584a);animation:pulse 1.2s infinite;box-shadow:0 6px 16px rgba(192,57,43,.4)}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(192,57,43,.5)}70%{box-shadow:0 0 0 12px rgba(192,57,43,0)}100%{box-shadow:0 0 0 0}}
 .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-.interim{color:var(--gold);font-size:.9rem;font-style:italic;min-height:1.4em;margin-top:8px}
+.interim{color:var(--gold);font-size:.95rem;font-weight:600;min-height:2em;margin-top:12px;padding:10px;background:#fffaf0;border-left:4px solid var(--gold);border-radius:4px}
+.interim.recording{background:#fce4ec;border-left-color:#c0392b;color:#c0392b}
 .help{color:var(--mute);font-size:.8rem;margin-top:14px}
 @media(max-width:800px){body{flex-direction:column}#side{width:100%;height:auto;position:static}main{padding:14px}}
 @media print{#side,.actions,.help,.interim,.modal,input,select,.btn,.mic-small,.mic-large{display:none}body{background:#fff}}
@@ -531,55 +532,75 @@ button{font:inherit;cursor:pointer}
 <label>अधिवक्ता का नाम व पता</label>
 <div class="field-wrapper">
 <textarea id="from" rows="3" placeholder="आपका नाम, पता, फोन"></textarea>
-<button class="mic-small" id="micFrom" onclick="startFieldVoice('from')">🎤</button>
+<button class="mic-small" id="micFrom" onclick="startFieldVoice('from')" title="🎤 क्लिक करें या बोलें">
+  🎤
+  <span class="mic-status">ON</span>
+</button>
 </div>
 </div>
 <div class="field">
 <label>प्राप्तकर्ता का नाम व पता</label>
 <div class="field-wrapper">
 <textarea id="to" rows="3" placeholder="किसे भेजना है"></textarea>
-<button class="mic-small" id="micTo" onclick="startFieldVoice('to')">🎤</button>
+<button class="mic-small" id="micTo" onclick="startFieldVoice('to')" title="🎤 क्लिक करें या बोलें">
+  🎤
+  <span class="mic-status">ON</span>
+</button>
 </div>
 </div>
 <div class="field">
 <label>विषय</label>
 <div class="field-wrapper">
 <input id="sub" placeholder="पत्र का विषय">
-<button class="mic-small" id="micSub" onclick="startFieldVoice('sub')">🎤</button>
+<button class="mic-small" id="micSub" onclick="startFieldVoice('sub')" title="🎤 क्लिक करें या बोलें">
+  🎤
+  <span class="mic-status">ON</span>
+</button>
 </div>
 </div>
 </div>
 <div class="card">
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
 <label style="font-size:.8rem;font-weight:600;color:var(--mute);margin:0">पत्र की सामग्री</label>
-<button class="mic-large" id="micBody" onclick="startFieldVoice('body')">🎤</button>
+<button class="mic-large" id="micBody" onclick="startFieldVoice('body')" title="🎤 क्लिक करें या बोलें">
+  🎤
+  <span class="mic-status">ON</span>
+</button>
 </div>
 <textarea id="body" placeholder="यहाँ पत्र लिखें या बोलें..."></textarea>
-<div class="interim" id="interim"></div>
+<div class="interim" id="interim">👂 माइक तैयार है - क्लिक करो या कहो "पूर्ण विराम"</div>
 </div>
 <div class="actions">
 <button class="btn-primary" onclick="saveLetter()">💾 सहेजें</button>
 <button class="btn" onclick="exportWord()">⬇ Word</button>
 <button class="btn" onclick="window.print()">🖨 प्रिंट</button>
 </div>
-<p class="help"><b>आवाज़ कमांड:</b> "पूर्ण विराम" → । | "कॉमा" → , | "नई लाइन" | "नया पैराग्राफ"</p>
+<p class="help"><b>आवाज़ कमांड:</b><br>
+✓ "पूर्ण विराम" → । <br>
+✓ "कॉमा" → , <br>
+✓ "नई लाइन" → नई पंक्ति<br>
+✓ "नया पैराग्राफ" → खाली पंक्ति<br>
+✓ "माइक बंद करो" या "mic band karo" → रिकॉर्डिंग बंद करें<br>
+✓ क्लिक भी कर सकते हो बंद करने के लिए
+</p>
 </main>
 
 <script>
 const TEMPLATES = {
   notice_dc: {subject: "कानूनी नोटिस – राशि की वसूली हेतु", body: "माननीय महोदय/महोदया,\\n\\nमैं अपने मुवक्किल श्री ____ की ओर से आपको यह औपचारिक नोटिस भेज रहा हूँ।\\n\\n1. यह कि मेरे मुवक्किल ने आपको दिनांक ____ को रुपये ____ की राशि ____ के रूप में प्रदान की थी।\\n\\n2. यह कि समझौते के अनुसार दिनांक ____ तक भुगतान किया जाना था, परंतु आपने अभी तक कोई भुगतान नहीं किया है।\\n\\n3. यह कि बार-बार लिखित और मौखिक माँग के बावजूद आप भुगतान करने में विफल रहे हैं।\\n\\nअतः आपको सूचित किया जाता है कि इस नोटिस की प्राप्ति के 15 दिन के भीतर उक्त राशि का संपूर्ण भुगतान करें।"},
   notice_hc: {subject: "कानूनी नोटिस – उच्च न्यायालय", body: "माननीय महोदय/महोदया,\\n\\nआपको यह औपचारिक कानूनी नोटिस दिया जा रहा है।\\n\\n1. यह कि मेरे मुवक्किल श्री ____ ने आपको दिनांक ____ को रुपये ____ की राशि अग्रिम के रूप में प्रदान की।\\n\\n2. उक्त राशि दिनांक ____ तक वापस किए जाने के लिए समझौते में निर्दिष्ट थी।\\n\\n3. आपने निर्धारित समय में भुगतान न करके अनुबंध का उल्लंघन किया है।\\n\\nअतः आपको 15 दिन का नोटिस दिया जाता है।"},
-  cheque_bounce: {subject: "चेक के बाउंस होने पर कानूनी नोटिस", body: "माननीय महोदय/महोदया,\\n\\nयह गंभीर कानूनी नोटिस है।\\n\\n1. आपने दिनांक ____ को चेक नं. ____ (रुपये ____ का) मेरे मुवक्किल को दिया था।\\n\\n2. उक्त चेक को ____ बैंक में जमा किया गया, परंतु यह insufficient funds के कारण बाउंस हो गया।\\n\\n3. आपको दिनांक ____ को बाउंस की सूचना दी गई थी, परंतु आपने तब से कोई कार्रवाई नहीं की।\\n\\n4. यह धारा 138 अ.प.ल.अ. के तहत अपराध है।"},
-  defamation: {subject: "मानहानि/निन्दा के लिए कानूनी नोटिस", body: "माननीय महोदय/महोदया,\\n\\nयह गंभीर कानूनी नोटिस है।\\n\\n1. आपने दिनांक ____ को मेरे मुवक्किल के विरुद्ध ______ (टीवी/समाचार/सोशल मीडिया) में झूठा और आपत्तिजनक बयान दिया।\\n\\n2. आपके इस कथन से मेरे मुवक्किल की प्रतिष्ठा को गंभीर नुकसान पहुँचा है।\\n\\n3. इससे व्यक्तिगत और व्यावसायिक क्षेत्र में भारी प्रतिकूल प्रभाव पड़ा है।"},
-  harassment: {subject: "कार्यस्थल/घरेलू उत्पीड़न नोटिस", body: "माननीय महोदय/महोदया,\\n\\nयह आपको यह सूचित करने के लिए है कि मेरे मुवक्किल को आपकी ओर से लगातार उत्पीड़न, धमकाना और परेशानी का सामना करना पड़ रहा है।\\n\\n1. दिनांक ____ से लेकर अब तक आपने मेरे मुवक्किल को परेशान किया है।\\n\\n2. आपने निम्नलिखित कार्य किए हैं:\\n   - ______\\n   - ______\\n\\n3. इससे मेरे मुवक्किल को शारीरिक और मानसिक पीड़ा हुई है।"},
-  employment_wrongful: {subject: "गलत बर्खास्तगी के लिए कानूनी नोटिस", body: "माननीय महोदय/महोदया,\\n\\nयह नोटिस यह सूचित करता है कि मेरे मुवक्किल श्री ____ को आपने गलत तरीके से बर्खास्त कर दिया।\\n\\n1. मेरे मुवक्किल आपकी कंपनी में दिनांक ____ से काम कर रहे थे।\\n\\n2. उन्हें अचानक दिनांक ____ को बर्खास्त कर दिया गया।\\n\\n3. उन्हें proper warning, inquiry या सुनवाई का अवसर नहीं दिया गया।\\n\\n4. बकाया वेतन: रुपये ______\\n   Gratuity: रुपये ______"},
-  eviction_notice: {subject: "संपत्ति से बेदखली नोटिस", body: "माननीय महोदय/महोदया,\\n\\nयह नोटिस दिया जाता है कि आप तुरंत निम्नलिखित संपत्ति से खाली करें:\\n\\nसंपत्ति का विवरण:\\nपता: ______\\nखेवट नं./प्लॉट नं.: ______\\nक्षेत्रफल: ______\\n\\n1. आप उपरोक्त संपत्ति में गैरकानूनी रूप से निवास कर रहे हैं।\\n\\n2. किराया दिनांक ____ से रुपये ____ महीने का है।\\n\\n3. आपको 60 दिन का अंतिम नोटिस दिया जाता है कि संपत्ति खाली करें।"},
-  divorce_settlement: {subject: "परस्पर सहमति से तलाक समझौता", body: "यह तलाक समझौता पत्र दिनांक ____ को श्री ______ (पति) और श्रीमती ______ (पत्नी) के बीच दर्ज किया गया है।\\n\\nजबकि दोनों पक्ष विवाह से परस्पर सहमति से अलग होना चाहते हैं।\\n\\nअतः निम्नलिखित शर्तों पर समझौता किया गया है:\\n\\n1. तलाक की रकम/गुज़ारा भत्ता:\\n   पति रुपये ______ का भुगतान करेगा।\\n\\n2. बच्चों की कस्टडी:\\n   - ______ (लड़का/लड़की) की कस्टडी श्रीमती को दी जाएगी।\\n\\n3. संपत्ति का बँटवारा:\\n   - गृह संपत्ति: ______"},
-  will_notice: {subject: "वसीयत के निष्पादन की अधिसूचना", body: "माननीय महोदय/महोदया,\\n\\nयह अधिसूचना है कि श्री ______ की वसीयत के माध्यम से निम्नलिखित संपत्ति अलग हुई है।\\n\\n1. दिनांक ____ को श्री ______ की मृत्यु हुई।\\n\\n2. उनकी वसीयत में निम्नलिखित व्यक्तियों को लाभार्थी बनाया गया है:\\n   - ______ को ______\\n   - ______ को ______\\n\\n3. वसीयत का निष्पादक नियुक्त किया गया है: ______"},
-  property_partition: {subject: "संपत्ति का विभाजन करने के लिए नोटिस", body: "माननीय महोदय/महोदया,\\n\\nयह नोटिस दिया जाता है कि निम्नलिखित संपत्ति का विभाजन किया जाना चाहिए।\\n\\nसंपत्ति का विवरण:\\nपता: ______\\nक्षेत्रफल: ______ वर्ग फीट\\nखेवट नं./प्लॉट नं.: ______\\n\\n1. उपरोक्त संपत्ति दोनों का संयुक्त संपत्ति है।\\n\\n2. मेरे मुवक्किल बहुत दिन से संपत्ति विभाजन चाहते हैं।"},
-  debt_recovery: {subject: "व्यक्तिगत कर्ज की वसूली के लिए नोटिस", body: "माननीय महोदय/महोदया,\\n\\nयह नोटिस दिया जाता है कि आप बकाया कर्ज का भुगतान करें।\\n\\n1. आपने दिनांक ____ को मेरे मुवक्किल से रुपये ______ का कर्ज लिया था।\\n\\n2. कर्ज की शर्तें:\\n   - मूल राशि: रुपये ______\\n   - ब्याज दर: ______ % वार्षिक\\n   - भुगतान की तारीख: ______\\n\\n3. साक्षियों के नाम: ______, ______"},
-  workplace_harassment: {subject: "कार्यस्थल पर यौन उत्पीड़न/भेदभाव नोटिस", body: "माननीय महोदय/महोदया,\\n\\nयह गंभीर नोटिस है।\\n\\n1. मेरे मुवक्किल को आपकी कंपनी में कार्यस्थल पर लगातार उत्पीड़न और भेदभाव का सामना करना पड़ रहा है।\\n\\n2. दिनांक ____ से लेकर ______ तक निम्नलिखित घटनाएँ हुई हैं:\\n   - ______\\n   - ______\\n\\n3. कंपनी प्रबंधन को रिपोर्ट दी गई, पर कोई कार्रवाई नहीं हुई।"},
-  gst_notice: {subject: "गलत GST/कर लगाने के लिए नोटिस", body: "माननीय महोदय/महोदया,\\n\\nयह नोटिस दिया जाता है कि आपने गलत GST/टैक्स लगाया है।\\n\\n1. दिनांक ____ को मेरे मुवक्किल ने आपसे सेवा/सामान ______ का ऑर्डर दिया।\\n\\n2. आपने गलत GST दर लगाया है:\\n   - सही दर: ______ %\\n   - आपका दर: ______ %\\n   - अतिरिक्त जमा: रुपये ______\\n\\n3. आपसे कई बार माँग की गई है, पर आपने वापसी नहीं की।"}
+  notice_sc: {subject: "कानूनी नोटिस – सुप्रीम कोर्ट", body: "माननीय महोदय/महोदया,\\n\\nयह गंभीर कानूनी नोटिस है।"},
+  cheque_bounce: {subject: "चेक के बाउंस होने पर कानूनी नोटिस", body: "माननीय महोदय/महोदया,\\n\\nयह गंभीर कानूनी नोटिस है।\\n\\n1. आपने दिनांक ____ को चेक नं. ____ (रुपये ____ का) मेरे मुवक्किल को दिया था।"},
+  defamation: {subject: "मानहानि/निन्दा के लिए कानूनी नोटिस", body: "माननीय महोदय/महोदया,\\n\\nयह गंभीर कानूनी नोटिस है।"},
+  harassment: {subject: "कार्यस्थल/घरेलू उत्पीड़न नोटिस", body: "माननीय महोदय/महोदया,\\n\\nयह आपको यह सूचित करने के लिए है कि मेरे मुवक्किल को आपकी ओर से लगातार उत्पीड़न का सामना करना पड़ रहा है।"},
+  employment_wrongful: {subject: "गलत बर्खास्तगी के लिए कानूनी नोटिस", body: "माननीय महोदय/महोदया,\\n\\nयह नोटिस यह सूचित करता है कि मेरे मुवक्किल श्री ____ को आपने गलत तरीके से बर्खास्त कर दिया।"},
+  eviction_notice: {subject: "संपत्ति से बेदखली नोटिस", body: "माननीय महोदय/महोदया,\\n\\nयह नोटिस दिया जाता है कि आप तुरंत निम्नलिखित संपत्ति से खाली करें।"},
+  divorce_settlement: {subject: "परस्पर सहमति से तलाक समझौता", body: "यह तलाक समझौता पत्र दिनांक ____ को श्री ______ (पति) और श्रीमती ______ (पत्नी) के बीच दर्ज किया गया है।"},
+  will_notice: {subject: "वसीयत के निष्पादन की अधिसूचना", body: "माननीय महोदय/महोदया,\\n\\nयह अधिसूचना है कि श्री ______ की वसीयत के माध्यम से।"},
+  property_partition: {subject: "संपत्ति का विभाजन करने के लिए नोटिस", body: "माननीय महोदय/महोदया,\\n\\nयह नोटिस दिया जाता है कि निम्नलिखित संपत्ति का विभाजन किया जाना चाहिए।"},
+  debt_recovery: {subject: "व्यक्तिगत कर्ज की वसूली के लिए नोटिस", body: "माननीय महोदय/महोदया,\\n\\nयह नोटिस दिया जाता है कि आप बकाया कर्ज का भुगतान करें।"},
+  workplace_harassment: {subject: "कार्यस्थल पर यौन उत्पीड़न/भेदभाव नोटिस", body: "माननीय महोदय/महोदया,\\n\\nयह गंभीर नोटिस है।"},
+  gst_notice: {subject: "गलत GST/कर लगाने के लिए नोटिस", body: "माननीय महोदय/महोदया,\\n\\nयह नोटिस दिया जाता है कि आपने गलत GST/टैक्स लगाया है।"}
 };
 
 const $=id=>document.getElementById(id);
@@ -587,7 +608,7 @@ let currentId=null, rec=null, on=false, currentField=null;
 
 $("date").valueAsDate=new Date();
 
-function newLetter(){currentId=null;$("client").value=$("to").value=$("sub").value=$("body").value="";$("interim").textContent="";}
+function newLetter(){currentId=null;$("client").value=$("to").value=$("sub").value=$("body").value="";$("interim").textContent="👂 माइक तैयार है";}
 
 function fillTemplate(){
   const t=TEMPLATES[$("tpl").value];
@@ -641,6 +662,7 @@ async function exportWord(){
 }
 
 const cmds=[[/नया पैराग्राफ|न्यू पैराग्राफ/g,"\\n\\n"],[/नई लाइन|नयी लाइन/g,"\\n"],[/पूर्ण विराम|पूर्णविराम/g,"।"],[/कॉमा|अल्प विराम/g,","]];
+const stopCmds=[/माइक बंद करो|mic band karo|mic band kar|माइक बंद|stop recording/i];
 
 function fix(t){cmds.forEach(([r,v])=>{t=t.replace(r,v)});return t;}
 
@@ -660,23 +682,48 @@ function addText(t, fieldId=null){
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
 if(SR){
   rec=new SR();rec.lang="hi-IN";rec.continuous=true;rec.interimResults=true;
-  rec.onresult=e=>{let im="";for(let i=e.resultIndex;i<e.results.length;i++){const r=e.results[i];r.isFinal?addText(fix(r[0].transcript.trim()),currentField):im+=r[0].transcript}$("interim").textContent=im?"सुन रहा हूँ: "+im:""};
-  rec.onerror=e=>$("interim").textContent="Error: "+e.error;
+  rec.onresult=e=>{
+    let im="";
+    let finalText="";
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      const r=e.results[i];
+      if(r.isFinal){
+        finalText=r[0].transcript.trim();
+        // Check if user said "mic band karo" or similar
+        if(stopCmds.test(finalText)){
+          stopMic();
+          $("interim").textContent="✋ माइक बंद हो गया - क्लिक करो दोबारा शुरू करने के लिए";
+          return;
+        }
+        addText(fix(finalText), currentField);
+      }else{
+        im+=r[0].transcript;
+      }
+    }
+    $("interim").textContent=im?"🎤 सुन रहा हूँ: "+im:"🎤 बोलो...";
+  };
+  rec.onerror=e=>$("interim").textContent="❌ Error: "+e.error;
   rec.onend=()=>{if(on)try{rec.start()}catch(_){}};
+}
+
+function stopMic(){
+  on=false;
+  if(rec)rec.stop();
+  document.querySelectorAll(".mic-small, .mic-large").forEach(m=>{m.classList.remove("on")});
 }
 
 function startFieldVoice(fieldId){
   if(!rec)return alert("Chrome खोलें");
   currentField=fieldId;
   if(on){
-    on=false;
-    rec.stop();
-    document.querySelectorAll(".mic-small, .mic-large").forEach(m=>{m.classList.remove("on");m.textContent="🎤"});
-    $("interim").textContent="";
+    stopMic();
+    $("interim").textContent="👂 माइक बंद हो गया";
   }else{
     on=true;
     try{rec.start()}catch(_){}
-    $("interim").textContent="सुन रहा हूँ...";
+    document.querySelectorAll(".mic-small, .mic-large").forEach(m=>{m.classList.toggle("on")});
+    $("interim").classList.add("recording");
+    $("interim").textContent="🎤 माइक चालू है - बोलो! (या कहो 'माइक बंद करो')";
   }
 }
 
