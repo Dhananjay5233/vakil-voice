@@ -420,7 +420,7 @@ def init_db():
 
 init_db()
 
-# ===== HOME PAGE (EMBEDDED HTML) =====
+# ===== HOME PAGE (EMBEDDED HTML WITH ALL TEMPLATES) =====
 HTML_CONTENT = """<!DOCTYPE html>
 <html lang="hi">
 <head>
@@ -461,7 +461,6 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold)}
 textarea{resize:vertical;min-height:150px;font-family:"Noto Serif Devanagari",serif;line-height:1.8}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
 .grid .field{margin:0}
-.grid.full{grid-template-columns:1fr}
 button{font:inherit;cursor:pointer}
 .btn{border-radius:9px;padding:9px 14px;font-weight:500;border:1px solid var(--line);background:#fff;color:var(--navy);transition:.15s}
 .btn:hover{border-color:var(--gold);background:#fffaf0}
@@ -476,24 +475,14 @@ button{font:inherit;cursor:pointer}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(192,57,43,.5)}70%{box-shadow:0 0 0 12px rgba(192,57,43,0)}100%{box-shadow:0 0 0 0}}
 .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
 .interim{color:var(--gold);font-size:.9rem;font-style:italic;min-height:1.4em;margin-top:8px}
-.spell-box{background:#e3f2fd;border-left:4px solid #2196f3;padding:10px 12px;margin-top:10px;border-radius:6px;font-size:.85rem}
-.spell-item{margin-bottom:6px}
-.spell-wrong{color:#c0392b;font-weight:600}
-.spell-right{color:#2c6a47}
 .help{color:var(--mute);font-size:.8rem;margin-top:14px}
-.modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:999;align-items:center;justify-content:center}
-.modal.show{display:flex}
-.modal-content{background:var(--card);border-radius:14px;padding:24px;max-width:500px;width:90%;max-height:80vh;overflow:auto}
-.modal-content h3{margin:0 0 16px;color:var(--navy)}
-.modal-close{position:absolute;top:16px;right:16px;border:0;background:none;cursor:pointer;font-size:1.5rem;color:var(--mute)}
 @media(max-width:800px){body{flex-direction:column}#side{width:100%;height:auto;position:static}main{padding:14px}}
-@media print{#side,.actions,.help,.interim,.spell-box,.modal,input,select,.btn,.mic-small,.mic-large{display:none}body{background:#fff}textarea{border:0}}
+@media print{#side,.actions,.help,.interim,.modal,input,select,.btn,.mic-small,.mic-large{display:none}body{background:#fff}}
 </style>
 </head>
 <body>
 <aside id="side">
 <div class="brand"><span class="logo">⚖</span><div><h1>वकील वॉइस</h1><p>आवाज़ से पत्र</p></div></div>
-<button class="profile-btn" onclick="openProfileModal()">👤 प्रोफाइल</button>
 <button class="btn-new" onclick="newLetter()">+ नया पत्र</button>
 <input class="search" id="search" placeholder="🔍 खोजें" oninput="searchLetters()">
 <div style="font-size:.7rem;letter-spacing:.05em;color:#8ea3bb;margin-bottom:8px;text-transform:uppercase">सहेजे पत्र</div>
@@ -509,11 +498,27 @@ button{font:inherit;cursor:pointer}
 <option value="District Court">जिला न्यायालय</option>
 <option value="High Court">उच्च न्यायालय</option>
 <option value="Supreme Court">सर्वोच्च न्यायालय</option>
+<option value="Consumer Court">उपभोक्ता न्यायालय</option>
+<option value="Labour Court">श्रम न्यायालय</option>
+<option value="Family Court">पारिवारिक न्यायालय</option>
 </select></div>
 <div class="field"><label>पत्र का प्रकार</label>
 <select id="tpl">
 <option value="">— चुनें —</option>
-<option value="notice">कानूनी नोटिस</option>
+<option value="notice_dc">कानूनी नोटिस (जिला न्यायालय)</option>
+<option value="notice_hc">कानूनी नोटिस (उच्च न्यायालय)</option>
+<option value="notice_sc">कानूनी नोटिस (सुप्रीम कोर्ट)</option>
+<option value="cheque_bounce">चेक बाउंस नोटिस</option>
+<option value="defamation">मानहानि नोटिस</option>
+<option value="harassment">उत्पीड़न नोटिस</option>
+<option value="employment_wrongful">गलत बर्खास्तगी</option>
+<option value="eviction_notice">बेदखली नोटिस</option>
+<option value="divorce_settlement">तलाक समझौता</option>
+<option value="will_notice">वसीयत अधिसूचना</option>
+<option value="property_partition">संपत्ति विभाजन</option>
+<option value="debt_recovery">कर्ज वसूली</option>
+<option value="workplace_harassment">कार्यस्थल उत्पीड़न</option>
+<option value="gst_notice">GST विवाद</option>
 </select></div>
 </div>
 </div>
@@ -557,15 +562,40 @@ button{font:inherit;cursor:pointer}
 <button class="btn" onclick="exportWord()">⬇ Word</button>
 <button class="btn" onclick="window.print()">🖨 प्रिंट</button>
 </div>
+<p class="help"><b>आवाज़ कमांड:</b> "पूर्ण विराम" → । | "कॉमा" → , | "नई लाइन" | "नया पैराग्राफ"</p>
 </main>
 
 <script>
+const TEMPLATES = {
+  notice_dc: {subject: "कानूनी नोटिस – राशि की वसूली हेतु", body: "माननीय महोदय/महोदया,\\n\\nमैं अपने मुवक्किल श्री ____ की ओर से आपको यह औपचारिक नोटिस भेज रहा हूँ।\\n\\n1. यह कि मेरे मुवक्किल ने आपको दिनांक ____ को रुपये ____ की राशि ____ के रूप में प्रदान की थी।\\n\\n2. यह कि समझौते के अनुसार दिनांक ____ तक भुगतान किया जाना था, परंतु आपने अभी तक कोई भुगतान नहीं किया है।\\n\\n3. यह कि बार-बार लिखित और मौखिक माँग के बावजूद आप भुगतान करने में विफल रहे हैं।\\n\\nअतः आपको सूचित किया जाता है कि इस नोटिस की प्राप्ति के 15 दिन के भीतर उक्त राशि का संपूर्ण भुगतान करें।"},
+  notice_hc: {subject: "कानूनी नोटिस – उच्च न्यायालय", body: "माननीय महोदय/महोदया,\\n\\nआपको यह औपचारिक कानूनी नोटिस दिया जा रहा है।\\n\\n1. यह कि मेरे मुवक्किल श्री ____ ने आपको दिनांक ____ को रुपये ____ की राशि अग्रिम के रूप में प्रदान की।\\n\\n2. उक्त राशि दिनांक ____ तक वापस किए जाने के लिए समझौते में निर्दिष्ट थी।\\n\\n3. आपने निर्धारित समय में भुगतान न करके अनुबंध का उल्लंघन किया है।\\n\\nअतः आपको 15 दिन का नोटिस दिया जाता है।"},
+  cheque_bounce: {subject: "चेक के बाउंस होने पर कानूनी नोटिस", body: "माननीय महोदय/महोदया,\\n\\nयह गंभीर कानूनी नोटिस है।\\n\\n1. आपने दिनांक ____ को चेक नं. ____ (रुपये ____ का) मेरे मुवक्किल को दिया था।\\n\\n2. उक्त चेक को ____ बैंक में जमा किया गया, परंतु यह insufficient funds के कारण बाउंस हो गया।\\n\\n3. आपको दिनांक ____ को बाउंस की सूचना दी गई थी, परंतु आपने तब से कोई कार्रवाई नहीं की।\\n\\n4. यह धारा 138 अ.प.ल.अ. के तहत अपराध है।"},
+  defamation: {subject: "मानहानि/निन्दा के लिए कानूनी नोटिस", body: "माननीय महोदय/महोदया,\\n\\nयह गंभीर कानूनी नोटिस है।\\n\\n1. आपने दिनांक ____ को मेरे मुवक्किल के विरुद्ध ______ (टीवी/समाचार/सोशल मीडिया) में झूठा और आपत्तिजनक बयान दिया।\\n\\n2. आपके इस कथन से मेरे मुवक्किल की प्रतिष्ठा को गंभीर नुकसान पहुँचा है।\\n\\n3. इससे व्यक्तिगत और व्यावसायिक क्षेत्र में भारी प्रतिकूल प्रभाव पड़ा है।"},
+  harassment: {subject: "कार्यस्थल/घरेलू उत्पीड़न नोटिस", body: "माननीय महोदय/महोदया,\\n\\nयह आपको यह सूचित करने के लिए है कि मेरे मुवक्किल को आपकी ओर से लगातार उत्पीड़न, धमकाना और परेशानी का सामना करना पड़ रहा है।\\n\\n1. दिनांक ____ से लेकर अब तक आपने मेरे मुवक्किल को परेशान किया है।\\n\\n2. आपने निम्नलिखित कार्य किए हैं:\\n   - ______\\n   - ______\\n\\n3. इससे मेरे मुवक्किल को शारीरिक और मानसिक पीड़ा हुई है।"},
+  employment_wrongful: {subject: "गलत बर्खास्तगी के लिए कानूनी नोटिस", body: "माननीय महोदय/महोदया,\\n\\nयह नोटिस यह सूचित करता है कि मेरे मुवक्किल श्री ____ को आपने गलत तरीके से बर्खास्त कर दिया।\\n\\n1. मेरे मुवक्किल आपकी कंपनी में दिनांक ____ से काम कर रहे थे।\\n\\n2. उन्हें अचानक दिनांक ____ को बर्खास्त कर दिया गया।\\n\\n3. उन्हें proper warning, inquiry या सुनवाई का अवसर नहीं दिया गया।\\n\\n4. बकाया वेतन: रुपये ______\\n   Gratuity: रुपये ______"},
+  eviction_notice: {subject: "संपत्ति से बेदखली नोटिस", body: "माननीय महोदय/महोदया,\\n\\nयह नोटिस दिया जाता है कि आप तुरंत निम्नलिखित संपत्ति से खाली करें:\\n\\nसंपत्ति का विवरण:\\nपता: ______\\nखेवट नं./प्लॉट नं.: ______\\nक्षेत्रफल: ______\\n\\n1. आप उपरोक्त संपत्ति में गैरकानूनी रूप से निवास कर रहे हैं।\\n\\n2. किराया दिनांक ____ से रुपये ____ महीने का है।\\n\\n3. आपको 60 दिन का अंतिम नोटिस दिया जाता है कि संपत्ति खाली करें।"},
+  divorce_settlement: {subject: "परस्पर सहमति से तलाक समझौता", body: "यह तलाक समझौता पत्र दिनांक ____ को श्री ______ (पति) और श्रीमती ______ (पत्नी) के बीच दर्ज किया गया है।\\n\\nजबकि दोनों पक्ष विवाह से परस्पर सहमति से अलग होना चाहते हैं।\\n\\nअतः निम्नलिखित शर्तों पर समझौता किया गया है:\\n\\n1. तलाक की रकम/गुज़ारा भत्ता:\\n   पति रुपये ______ का भुगतान करेगा।\\n\\n2. बच्चों की कस्टडी:\\n   - ______ (लड़का/लड़की) की कस्टडी श्रीमती को दी जाएगी।\\n\\n3. संपत्ति का बँटवारा:\\n   - गृह संपत्ति: ______"},
+  will_notice: {subject: "वसीयत के निष्पादन की अधिसूचना", body: "माननीय महोदय/महोदया,\\n\\nयह अधिसूचना है कि श्री ______ की वसीयत के माध्यम से निम्नलिखित संपत्ति अलग हुई है।\\n\\n1. दिनांक ____ को श्री ______ की मृत्यु हुई।\\n\\n2. उनकी वसीयत में निम्नलिखित व्यक्तियों को लाभार्थी बनाया गया है:\\n   - ______ को ______\\n   - ______ को ______\\n\\n3. वसीयत का निष्पादक नियुक्त किया गया है: ______"},
+  property_partition: {subject: "संपत्ति का विभाजन करने के लिए नोटिस", body: "माननीय महोदय/महोदया,\\n\\nयह नोटिस दिया जाता है कि निम्नलिखित संपत्ति का विभाजन किया जाना चाहिए।\\n\\nसंपत्ति का विवरण:\\nपता: ______\\nक्षेत्रफल: ______ वर्ग फीट\\nखेवट नं./प्लॉट नं.: ______\\n\\n1. उपरोक्त संपत्ति दोनों का संयुक्त संपत्ति है।\\n\\n2. मेरे मुवक्किल बहुत दिन से संपत्ति विभाजन चाहते हैं।"},
+  debt_recovery: {subject: "व्यक्तिगत कर्ज की वसूली के लिए नोटिस", body: "माननीय महोदय/महोदया,\\n\\nयह नोटिस दिया जाता है कि आप बकाया कर्ज का भुगतान करें।\\n\\n1. आपने दिनांक ____ को मेरे मुवक्किल से रुपये ______ का कर्ज लिया था।\\n\\n2. कर्ज की शर्तें:\\n   - मूल राशि: रुपये ______\\n   - ब्याज दर: ______ % वार्षिक\\n   - भुगतान की तारीख: ______\\n\\n3. साक्षियों के नाम: ______, ______"},
+  workplace_harassment: {subject: "कार्यस्थल पर यौन उत्पीड़न/भेदभाव नोटिस", body: "माननीय महोदय/महोदया,\\n\\nयह गंभीर नोटिस है।\\n\\n1. मेरे मुवक्किल को आपकी कंपनी में कार्यस्थल पर लगातार उत्पीड़न और भेदभाव का सामना करना पड़ रहा है।\\n\\n2. दिनांक ____ से लेकर ______ तक निम्नलिखित घटनाएँ हुई हैं:\\n   - ______\\n   - ______\\n\\n3. कंपनी प्रबंधन को रिपोर्ट दी गई, पर कोई कार्रवाई नहीं हुई।"},
+  gst_notice: {subject: "गलत GST/कर लगाने के लिए नोटिस", body: "माननीय महोदय/महोदया,\\n\\nयह नोटिस दिया जाता है कि आपने गलत GST/टैक्स लगाया है।\\n\\n1. दिनांक ____ को मेरे मुवक्किल ने आपसे सेवा/सामान ______ का ऑर्डर दिया।\\n\\n2. आपने गलत GST दर लगाया है:\\n   - सही दर: ______ %\\n   - आपका दर: ______ %\\n   - अतिरिक्त जमा: रुपये ______\\n\\n3. आपसे कई बार माँग की गई है, पर आपने वापसी नहीं की।"}
+};
+
 const $=id=>document.getElementById(id);
 let currentId=null, rec=null, on=false, currentField=null;
 
 $("date").valueAsDate=new Date();
 
 function newLetter(){currentId=null;$("client").value=$("to").value=$("sub").value=$("body").value="";$("interim").textContent="";}
+
+function fillTemplate(){
+  const t=TEMPLATES[$("tpl").value];
+  if(t){
+    $("sub").value=t.subject;
+    $("body").value=t.body;
+  }
+}
 
 async function saveLetter(){
   const f={id:currentId,client:$("client").value,sender:$("from").value,recipient:$("to").value,letter_date:$("date").value,subject:$("sub").value,body:$("body").value};
@@ -646,12 +676,14 @@ function startFieldVoice(fieldId){
   }else{
     on=true;
     try{rec.start()}catch(_){}
-    document.querySelectorAll(".mic-small, .mic-large").forEach(m=>{m.classList.toggle("on",m.id==="mic"+fieldId.charAt(0).toUpperCase()+fieldId.slice(1))});
     $("interim").textContent="सुन रहा हूँ...";
   }
 }
 
-refreshList();
+document.addEventListener("DOMContentLoaded", function(){
+  $("tpl").addEventListener("change", fillTemplate);
+  refreshList();
+});
 </script>
 </body>
 </html>"""
