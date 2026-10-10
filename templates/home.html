@@ -151,14 +151,14 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
   <nav class="nav" aria-label="मुख्य">
     <a class="brand" href="/">{% include "_seal.html" %}<b>वकील वॉइस</b></a>
     <div class="nav-links">
-      <a class="text" href="#kaise">कैसे काम करता है</a>
-      <a class="text" href="#dhanche">पत्रों के ढाँचे</a>
+      <a class="text" href="#kaise">How It Works</a>
+      <a class="text" href="#dhanche">Templates</a>
       {% if user %}
         <span class="hello">नमस्ते, {{ user.name }}</span>
         <a class="btn btn-tape" href="{{ url_for('editor') }}">मेरे पत्र खोलें</a>
       {% else %}
-        <a class="btn btn-quiet" href="{{ url_for('login') }}">लॉग इन</a>
-        <a class="btn btn-tape" href="{{ url_for('signup') }}">खाता बनाएँ</a>
+        <a class="btn btn-quiet" href="{{ url_for('login') }}">Login</a>
+        <a class="btn btn-tape" href="{{ url_for('signup') }}">Signup</a>
       {% endif %}
     </div>
   </nav>
@@ -171,8 +171,8 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
         {% if user %}
           <a class="btn btn-tape" href="{{ url_for('editor') }}">नया पत्र लिखें</a>
         {% else %}
-          <a class="btn btn-tape" href="{{ url_for('signup') }}">मुफ़्त खाता बनाएँ</a>
-          <a class="btn" href="{{ url_for('login') }}">लॉग इन करें</a>
+          <a class="btn btn-tape" href="{{ url_for('signup') }}">Signup</a>
+          <a class="btn" href="{{ url_for('login') }}">Login</a>
         {% endif %}
       </div>
       <p class="note">Google Chrome में चलता है — मोबाइल और कंप्यूटर दोनों पर।</p>
