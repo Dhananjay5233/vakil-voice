@@ -100,8 +100,8 @@ textarea{resize:vertical;min-height:90px;font-family:var(--display);line-height:
   <div id="list" role="list"></div>
   <div class="me">
     <span class="avatar" aria-hidden="true">{{ user.name[:1] }}</span>
-    <div class="who"><b id="meName">{{ user.name }}</b><button onclick="openProfile()">प्रोफ़ाइल बदलें</button></div>
-    <form method="post" action="{{ url_for('logout') }}"><button class="logout" type="submit">लॉग आउट</button></form>
+    <div class="who"><b id="meName">{{ user.name }}</b><button onclick="openProfile()">Profile</button></div>
+    <form method="post" action="{{ url_for('logout') }}"><button class="logout" type="submit">Logout</button></form>
   </div>
 </aside>
 
@@ -160,9 +160,9 @@ textarea{resize:vertical;min-height:90px;font-family:var(--display);line-height:
 </div>
 
 <div class="actions">
-<button class="btn btn-tape" onclick="saveLetter()">पत्र सहेजें</button>
-<button class="btn" onclick="exportWord()">Word में निकालें</button>
-<button class="btn" onclick="window.print()">प्रिंट करें</button>
+<button class="btn btn-tape" onclick="saveLetter()">Save Letter</button>
+<button class="btn" onclick="exportWord()">Export to Word</button>
+<button class="btn" onclick="window.print()">Print</button>
 </div>
 <p class="help"><b>आवाज़ कमांड:</b> "पूर्ण विराम" → । &nbsp;|&nbsp; "कॉमा" → , &nbsp;|&nbsp; "नई लाइन" &nbsp;|&nbsp; "नया पैराग्राफ" &nbsp;|&nbsp; "पैराग्राफ संख्या" → 1. 2. 3. &nbsp;|&nbsp; "माइक बंद करो" &nbsp;|&nbsp; Ctrl+S से सहेजें</p>
 </main>
@@ -175,8 +175,8 @@ textarea{resize:vertical;min-height:90px;font-family:var(--display);line-height:
 <div class="field"><label for="pAddr">पता</label><textarea id="pAddr" style="min-height:70px"></textarea></div>
 <div class="field"><label for="pPhone">फोन</label><input id="pPhone" type="tel"></div>
 <div class="actions">
-<button class="btn btn-tape" onclick="saveProfile()">प्रोफ़ाइल सहेजें</button>
-<button class="btn" onclick="closeProfile()">बंद करें</button>
+<button class="btn btn-tape" onclick="saveProfile()">Save Profile</button>
+<button class="btn" onclick="closeProfile()">Close</button>
 </div></div></div>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
