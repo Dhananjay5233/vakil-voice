@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ "लॉग इन" if mode == "login" else "खाता बनाएँ" }} — वकील वॉइस</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700&family=Tiro+Devanagari+Hindi&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+<style>
+body{min-height:100vh;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr)}
+.side{position:relative;background:var(--ink);color:#DDE2F1;padding:36px 48px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}
+.side .brand{color:#fff}
+.side .brand .seal circle{stroke:#C9B7E8}
+.side .brand .seal g{stroke:#fff}
+.quote{font-family:var(--display);font-size:clamp(1.7rem,3vw,2.5rem);line-height:1.3;color:#fff;margin:0;max-width:14em}
+.quote small{display:block;font-family:var(--ui);font-size:1rem;color:#AEB6D3;margin-top:16px;line-height:1.6}
+.side .tape{position:absolute;top:0;bottom:0;right:64px;width:22px;background:linear-gradient(90deg,var(--tape-dark),var(--tape) 30%,#C4383F 55%,var(--tape) 80%,var(--tape-dark));opacity:.9}
+.side footer{font-size:.9rem;color:#8E97BB}
+main{display:flex;align-items:center;justify-content:center;padding:40px 24px}
+.card{width:100%;max-width:420px}
+.tabs{display:flex;gap:4px;background:#E2E7DA;border-radius:999px;padding:4px;margin-bottom:30px}
+.tabs a{flex:1;text-align:center;text-decoration:none;padding:.5em;border-radius:999px;color:var(--ink-2);font-weight:600}
+.tabs a[aria-current="page"]{background:var(--sheet);color:var(--ink);box-shadow:0 1px 3px rgba(31,43,91,.15)}
+h1{font-family:var(--display);font-weight:400;font-size:2.2rem;margin:0 0 6px;line-height:1.2}
+.sub{color:var(--mute);margin:0 0 26px}
+label{display:block;font-weight:600;font-size:.95rem;margin:0 0 6px}
+.field{margin-bottom:18px}
+input{width:100%;font:inherit;font-size:1.05rem;color:var(--ink);background:var(--sheet);border:1.5px solid var(--rule);border-radius:8px;padding:.7em .85em}
+input:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 3px rgba(31,43,91,.12)}
+.hint{font-size:.88rem;color:var(--mute);margin-top:5px}
+.pw{position:relative}
+.pw input{padding-right:4.5em}
+.pw button{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:none;color:var(--ink-2);font-weight:600;font-size:.9rem;padding:.4em .6em;border-radius:6px}
+.pw button:hover{background:rgba(31,43,91,.08)}
+.error{background:#FBECEC;border-left:4px solid var(--tape);color:var(--tape-dark);padding:10px 14px;border-radius:4px;margin-bottom:20px;font-weight:500}
+.submit{width:100%;font-size:1.1rem;padding:.8em;margin-top:6px}
+.switch{text-align:center;margin-top:22px;color:var(--mute)}
+.switch a{color:var(--tape);font-weight:600}
+.back{display:inline-block;margin-bottom:26px;color:var(--ink-2);text-decoration:none;font-weight:500}
+.back:hover{text-decoration:underline}
+@media (max-width:820px){
+  body{grid-template-columns:1fr;grid-template-rows:auto 1fr}
+  .side{padding:22px 16px 26px}
+  .side .tape{right:22px;width:14px}
+  .quote{font-size:1.5rem;margin-top:18px}
+  .quote small,.side footer{display:none}
+  main{padding:28px 16px 40px;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+<aside class="side">
+  <a class="brand" href="/">{% include "_seal.html" %}<b>वकील वॉइस</b></a>
+  <p class="quote">आप बोलिए,<br>पत्र हम लिखेंगे।
+    <small>आपके सहेजे सभी पत्र, मुवक्किलों के नाम और प्रोफ़ाइल सिर्फ़ आपके खाते में रहते हैं।</small></p>
+  <footer>हिंदी में बोलकर कानूनी पत्र</footer>
+  <div class="tape" aria-hidden="true"></div>
+</aside>
+
+<main>
+  <div class="card">
+    <a class="back" href="/">‹ मुख्य पृष्ठ</a>
+    <nav class="tabs" aria-label="खाता">
+      <a href="{{ url_for('login', next=request.args.get('next')) }}" {% if mode == 'login' %}aria-current="page"{% endif %}>लॉग इन</a>
+      <a href="{{ url_for('signup') }}" {% if mode == 'signup' %}aria-current="page"{% endif %}>नया खाता</a>
+    </nav>
+
+    {% if mode == "login" %}
+      <h1>फिर से स्वागत है</h1>
+      <p class="sub">अपने सहेजे पत्र देखने के लिए लॉग इन करें।</p>
+    {% else %}
+      <h1>अपना खाता बनाएँ</h1>
+      <p class="sub">एक मिनट लगेगा। आपके पत्र सिर्फ़ आपको दिखेंगे।</p>
+    {% endif %}
+
+    {% if error %}<div class="error" role="alert">{{ error }}</div>{% endif %}
+
+    <form method="post" novalidate>
+      {% if mode == "signup" %}
+      <div class="field">
+        <label for="name">आपका नाम</label>
+        <input id="name" name="name" autocomplete="name" value="{{ name_val or '' }}" placeholder="जैसे: अधि. सुनीता शर्मा" required>
+      </div>
+      {% endif %}
+      <div class="field">
+        <label for="login">ईमेल या मोबाइल नंबर</label>
+        <input id="login" name="login" autocomplete="username" value="{{ login_val or '' }}" placeholder="name@gmail.com या 98XXXXXXXX" required {% if mode == 'login' %}autofocus{% endif %}>
+      </div>
+      <div class="field">
+        <label for="password">पासवर्ड</label>
+        <div class="pw">
+          <input id="password" name="password" type="password" autocomplete="{{ 'current-password' if mode == 'login' else 'new-password' }}" required>
+          <button type="button" id="togglePw" aria-controls="password">दिखाएँ</button>
+        </div>
+        {% if mode == "signup" %}<p class="hint">कम से कम 6 अक्षर।</p>{% endif %}
+      </div>
+      <button class="btn btn-tape submit" type="submit">{{ "लॉग इन करें" if mode == "login" else "खाता बनाएँ" }}</button>
+    </form>
+
+    <p class="switch">
+      {% if mode == "login" %}नया खाता चाहिए? <a href="{{ url_for('signup') }}">खाता बनाएँ</a>
+      {% else %}पहले से खाता है? <a href="{{ url_for('login') }}">लॉग इन करें</a>{% endif %}
+    </p>
+  </div>
+</main>
+<script>
+const pw = document.getElementById("password"), t = document.getElementById("togglePw");
+t.addEventListener("click", () => { const show = pw.type === "password"; pw.type = show ? "text" : "password"; t.textContent = show ? "छिपाएँ" : "दिखाएँ"; });
+{% if mode == "signup" and not name_val %}document.getElementById("name").focus();{% endif %}
+</script>
+</body>
+</html>
