@@ -100,7 +100,7 @@ input:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 3px rgba(31,43
     </form>
 
     <p class="switch">
-      {% if mode == "login" %}नया खाता चाहिए? <a href="{{ url_for('signup') }}">New Account</a>
+      {% if mode == "login" %}नया खाता चाहिए? <a href="{{ url_for('signup') }}">Create Account</a>
       {% else %}पहले से खाता है? <a href="{{ url_for('login') }}">Login</a>{% endif %}
     </p>
   </div>
