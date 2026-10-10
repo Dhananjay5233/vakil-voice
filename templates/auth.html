@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{{ "लॉग इन" if mode == "login" else "खाता बनाएँ" }} — वकील वॉइस</title>
+<title>{{ "लॉग इन" if mode == "login" else "New Account" }} — वकील वॉइस</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700&family=Tiro+Devanagari+Hindi&display=swap" rel="stylesheet">
@@ -63,8 +63,8 @@ input:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 3px rgba(31,43
   <div class="card">
     <a class="back" href="/">‹ Homepage</a>
     <nav class="tabs" aria-label="खाता">
-      <a href="{{ url_for('login', next=request.args.get('next')) }}" {% if mode == 'login' %}aria-current="page"{% endif %}>लॉग इन</a>
-      <a href="{{ url_for('signup') }}" {% if mode == 'signup' %}aria-current="page"{% endif %}>नया खाता</a>
+      <a href="{{ url_for('login', next=request.args.get('next')) }}" {% if mode == 'login' %}aria-current="page"{% endif %}>Login</a>
+      <a href="{{ url_for('signup') }}" {% if mode == 'signup' %}aria-current="page"{% endif %}>New Account</a>
     </nav>
 
     {% if mode == "login" %}
@@ -96,7 +96,7 @@ input:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 3px rgba(31,43
         </div>
         {% if mode == "signup" %}<p class="hint">कम से कम 6 अक्षर।</p>{% endif %}
       </div>
-      <button class="btn btn-tape submit" type="submit">{{ "Login" if mode == "login" else "New Account" }}</button>
+      <button class="btn btn-tape submit" type="submit">{{ "Login" if mode == "login" else "Signup" }}</button>
     </form>
 
     <p class="switch">
