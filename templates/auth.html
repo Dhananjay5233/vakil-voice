@@ -61,7 +61,7 @@ input:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 3px rgba(31,43
 
 <main>
   <div class="card">
-    <a class="back" href="/">‹ मुख्य पृष्ठ</a>
+    <a class="back" href="/">‹ Homepage</a>
     <nav class="tabs" aria-label="खाता">
       <a href="{{ url_for('login', next=request.args.get('next')) }}" {% if mode == 'login' %}aria-current="page"{% endif %}>लॉग इन</a>
       <a href="{{ url_for('signup') }}" {% if mode == 'signup' %}aria-current="page"{% endif %}>नया खाता</a>
@@ -92,22 +92,22 @@ input:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 3px rgba(31,43
         <label for="password">पासवर्ड</label>
         <div class="pw">
           <input id="password" name="password" type="password" autocomplete="{{ 'current-password' if mode == 'login' else 'new-password' }}" required>
-          <button type="button" id="togglePw" aria-controls="password">दिखाएँ</button>
+          <button type="button" id="togglePw" aria-controls="password">show</button>
         </div>
         {% if mode == "signup" %}<p class="hint">कम से कम 6 अक्षर।</p>{% endif %}
       </div>
-      <button class="btn btn-tape submit" type="submit">{{ "लॉग इन करें" if mode == "login" else "खाता बनाएँ" }}</button>
+      <button class="btn btn-tape submit" type="submit">{{ "Login" if mode == "login" else "New Account" }}</button>
     </form>
 
     <p class="switch">
-      {% if mode == "login" %}नया खाता चाहिए? <a href="{{ url_for('signup') }}">खाता बनाएँ</a>
-      {% else %}पहले से खाता है? <a href="{{ url_for('login') }}">लॉग इन करें</a>{% endif %}
+      {% if mode == "login" %}नया खाता चाहिए? <a href="{{ url_for('signup') }}">New Account</a>
+      {% else %}पहले से खाता है? <a href="{{ url_for('login') }}">Login</a>{% endif %}
     </p>
   </div>
 </main>
 <script>
 const pw = document.getElementById("password"), t = document.getElementById("togglePw");
-t.addEventListener("click", () => { const show = pw.type === "password"; pw.type = show ? "text" : "password"; t.textContent = show ? "छिपाएँ" : "दिखाएँ"; });
+t.addEventListener("click", () => { const show = pw.type === "password"; pw.type = show ? "text" : "password"; t.textContent = show ? "hide" : "show"; });
 {% if mode == "signup" and not name_val %}document.getElementById("name").focus();{% endif %}
 </script>
 </body>
